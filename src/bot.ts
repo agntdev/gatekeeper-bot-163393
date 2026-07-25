@@ -6,7 +6,9 @@ import type { StorageAdapter } from "grammy";
 // bot grows. Durable domain data must NOT live here — use the toolkit's
 // persistent storage (see AGENTS.md).
 export interface Session {
-  // example: step?: "awaiting_amount";
+  /** Persistent, per-chat moderation data.  Redis/DO session storage keeps it durable. */
+  groupGuard?: import("./moderation.js").GroupState;
+  flow?: "welcome" | "rules";
 }
 
 export type Ctx = BotContext<Session>;

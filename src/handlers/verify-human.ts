@@ -1,17 +1,15 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { log, member, now, state, upsertMember } from "../moderation.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "I'm human", data: "verify:human" }) if the toolkit exposes it.
-
-const composer = new Composer();
-
+const composer = new Composer<Ctx>();
 composer.callbackQuery("verify:human", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Complete verification to enable posting");
+  const s = state(ctx); const userId = ctx.from.id; const m = member(s, userId);
+  if (!m) { await ctx.reply("Your verification has expired. Ask an admin to add you again."); return; }
+  if (now() - m.joinTime > 3 * 60 * 1000) { await ctx.reply("Your verification has expired. Ask an admin to add you again."); return; }
+  upsertMember(s, userId, { verified: true }); log(s, userId, "verify", userId, "human verification");
+  await ctx.editMessageText("You’re verified and can post in this group.", { reply_markup: inlineKeyboard([[inlineButton("Open dashboard", "menu:main")]]) });
 });
-
 export default composer;

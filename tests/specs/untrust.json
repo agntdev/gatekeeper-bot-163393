@@ -1,0 +1,8 @@
+[
+  {
+    "name": "untrust is admin-only",
+    "steps": [
+      { "send": { "text": "/untrust" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Only group admins can change trust settings." } }] }
+    ]
+  }
+]

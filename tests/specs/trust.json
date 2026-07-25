@@ -7,7 +7,7 @@
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Mark user as trusted (exempt from auto-actions)"
+              "text": "Only group admins can change trust settings."
             }
           }
         ],

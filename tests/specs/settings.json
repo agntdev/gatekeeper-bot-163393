@@ -1,0 +1,10 @@
+[
+  {
+    "name": "admin controls reject non-admin users",
+    "steps": [
+      { "send": { "text": "/setwelcome Hello" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Only group admins can change the welcome message." } }] },
+      { "send": { "text": "/setrules mute" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Only group admins can change spam rules." } }] },
+      { "send": { "text": "/stats" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Only group admins can view moderation stats." } }] }
+    ]
+  }
+]
