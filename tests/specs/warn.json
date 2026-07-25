@@ -7,7 +7,7 @@
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Issue warning to user with reason"
+              "text": "Only group admins can issue warnings."
             }
           }
         ],

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "dashboard is protected for non-admin users",
+    "steps": [
+      { "send": { "callback": "guard:dashboard" }, "expect": [{ "method": "answerCallbackQuery" }, { "method": "editMessageText", "payload": { "text": "This dashboard is available to group admins." } }] }
+    ]
+  }
+]

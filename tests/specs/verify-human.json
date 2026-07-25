@@ -7,7 +7,7 @@
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Complete verification to enable posting"
+              "text": "Your verification has expired. Ask an admin to add you again."
             }
           }
         ],

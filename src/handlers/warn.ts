@@ -1,15 +1,13 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { commandArgs, isAdmin, log, state, targetFromReply, upsertMember } from "../moderation.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-
-const composer = new Composer();
-
+const composer = new Composer<Ctx>();
 composer.command("warn", async (ctx) => {
-  await ctx.reply("Issue warning to user with reason");
+  if (!(await isAdmin(ctx))) { await ctx.reply("Only group admins can issue warnings."); return; }
+  const target = targetFromReply(ctx); const reason = commandArgs(ctx);
+  if (!target || !reason) { await ctx.reply("Reply to a member with /warn and a short reason."); return; }
+  upsertMember(state(ctx), target, {}); log(state(ctx), target, "warn", ctx.from?.id ?? 0, reason);
+  await ctx.reply("Warning recorded.");
 });
-
 export default composer;

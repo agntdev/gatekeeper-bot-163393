@@ -1,15 +1,15 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { commandArgs, isAdmin, log, state, targetFromReply, upsertMember } from "../moderation.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-
-const composer = new Composer();
-
-composer.command("trust", async (ctx) => {
-  await ctx.reply("Mark user as trusted (exempt from auto-actions)");
-});
-
+const composer = new Composer<Ctx>();
+async function setTrust(ctx: Ctx, trusted: boolean) {
+  if (!(await isAdmin(ctx))) { await ctx.reply("Only group admins can change trust settings."); return; }
+  const target = targetFromReply(ctx);
+  if (!target) { await ctx.reply(`Reply to a member with /${trusted ? "trust" : "untrust"}.`); return; }
+  upsertMember(state(ctx), target, { trusted }); log(state(ctx), target, trusted ? "verify" : "warn", ctx.from?.id ?? 0, trusted ? "trusted" : "trust removed");
+  await ctx.reply(trusted ? "Member is trusted and exempt from automatic actions." : "Member is no longer trusted.");
+}
+composer.command("trust", (ctx) => setTrust(ctx, true));
+composer.command("untrust", (ctx) => setTrust(ctx, false));
 export default composer;
